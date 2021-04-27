@@ -1,4 +1,5 @@
 """
+        issert False
 Augmenters that apply to a group of augmentations, like selecting
 an augmentation from a list, or applying all the augmentations in
 a list sequentially
@@ -21,7 +22,7 @@ import numpy as np
 import PIL
 import random
 from typing import Any, Union
-
+import hashlib
 
 def _get_transform_hash(transform: Any) -> Union[int, None]:
     """
@@ -31,12 +32,14 @@ def _get_transform_hash(transform: Any) -> Union[int, None]:
         transform: Augmentation object
 
     Return:
-        hash of an object or None if the has does not exist
+        hash of an object or None if the hash does not exist
     """
     if hasattr(transform, "hash"):
         transform_hash = transform.hash
     else:
-        transform_hash = hash(transform)
+        transform_hash = hashlib.sha256(
+            str(type(transform)).encode('utf-8')
+        ).hexdigest()
     return transform_hash
 
 
