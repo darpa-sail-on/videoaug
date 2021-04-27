@@ -149,7 +149,7 @@ class PiecewiseAffineTransform(object):
 
          displacement_magnification (float): it magnify the image
     """
-    def __init__(self, displacement=0, displacement_kernel=0, displacement_magnification=0):
+    def __init__(self, displacement=0, displacement_kernel=3, displacement_magnification=0):
         self.displacement = displacement
         self.displacement_kernel = displacement_kernel
         self.displacement_magnification = displacement_magnification
@@ -168,8 +168,9 @@ class PiecewiseAffineTransform(object):
                             'but got list of {0}'.format(type(clip[0])))
 
         displacement_map = np.random.rand(image_h, image_w, 2) * 2 * self.displacement - self.displacement
-        displacement_map = cv2.GaussianBlur(displacement_map, None,
-                                            self.displacement_kernel)
+        displacement_map = cv2.GaussianBlur(displacement_map, 
+                                            ksize=(self.displacement_kernel, self.displacement_kernel),
+                                            sigmaX=0)
         displacement_map *= self.displacement_magnification * self.displacement_kernel
         displacement_map = np.floor(displacement_map).astype('int32')
 

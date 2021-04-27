@@ -89,7 +89,8 @@ class RandomResize(object):
         new_h = int(im_h * scaling_factor)
         new_size = (new_h, new_w)
         if isinstance(clip[0], np.ndarray):
-            return [scipy.misc.imresize(img, size=(new_h, new_w),interp=self.interpolation) for img in clip]
+            return [np.array(PIL.Image.fromarray(img).resize(size=(new_w, new_h),
+                resample=self._get_PIL_interp(self.interpolation))) for img in clip]
         elif isinstance(clip[0], PIL.Image.Image):
             return [img.resize(size=(new_w, new_h), resample=self._get_PIL_interp(self.interpolation)) for img in clip]
         else:
