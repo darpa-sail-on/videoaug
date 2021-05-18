@@ -44,8 +44,10 @@ class TemporalBeginCrop(object):
         for img in out:
             if len(out) >= self.size:
                 break
-            out.append(img)
-
+            if isinstance(out, np.ndarray):
+                out = np.append(out,np.expand_dims(img,0), axis = 0)
+            else:
+                out.append(img)
         return out
 
 
@@ -72,7 +74,10 @@ class TemporalCenterCrop(object):
         for img in out:
             if len(out) >= self.size:
                 break
-            out.append(img)
+            if isinstance(out, np.ndarray):
+                out = np.append(out,np.expand_dims(img,0), axis = 0)
+            else:
+                out.append(img)
 
         return out
 
@@ -100,8 +105,10 @@ class TemporalRandomCrop(object):
         for img in out:
             if len(out) >= self.size:
                 break
-            out.append(img)
-
+            if isinstance(out, np.ndarray):
+                out = np.append(out,np.expand_dims(img,0), axis = 0)
+            else:
+                out.append(img)
         return out
 
 
