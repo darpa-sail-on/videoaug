@@ -72,9 +72,9 @@ class RandomResize(object):
         ('nearest', 'lanczos', 'bilinear', 'bicubic' or 'cubic').
     """
 
-    def __init__(self, rate=0.0, interp='bilinear'):
+    def __init__(self, rate=0.0, interp='bilinear', set_even=False):
         self.rate = rate
-
+        self.set_even = set_even
         self.interpolation = interp
 
     def __call__(self, clip):
@@ -87,9 +87,15 @@ class RandomResize(object):
 
         new_w = int(im_w * scaling_factor)
         new_h = int(im_h * scaling_factor)
+        if self.set_even:
+            if new_w % 2 != 0:
+                new_w += 1
+            if new_h %2 != 0:
+                new_h += 1
         new_size = (new_h, new_w)
         if isinstance(clip[0], np.ndarray):
-            return [scipy.misc.imresize(img, size=(new_h, new_w),interp=self.interpolation) for img in clip]
+            return [np.array(PIL.Image.fromarray(img).resize(size=(new_w, new_h),
+                resample=self._get_PIL_interp(self.interpolation))) for img in clip]
         elif isinstance(clip[0], PIL.Image.Image):
             return [img.resize(size=(new_w, new_h), resample=self._get_PIL_interp(self.interpolation)) for img in clip]
         else:
